@@ -1,9 +1,13 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
+const { ApolloServer } = require('apollo-server-express');
+require('dotenv').config();
 
+// GraphQl TypeDefinitions and Resolvers
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
+
+const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   // Initialize our express app
@@ -32,15 +36,22 @@ async function startServer() {
   });
 
   // Established a connection with the mongoose
-  await mongoose.connect('mongodb://127.0.0.1/post_db', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  console.log('MongoDB connected....');
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      dbName: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      pass: process.env.DB_PASS,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('Mongodb connected....');
+  } catch (err) {
+    console.log(err.message);
+  }
 
   // Listen
-  app.listen(4000, function() {
-    console.log('Server is running on port 4000');
+  app.listen(PORT, function() {
+    console.log(`Server is running on port ${PORT}`);
   });
 }
 
