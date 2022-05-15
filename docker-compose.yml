@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  # Service 1:
+  # MongoDB Container
+  # This service is responsible to start the MongoDB container
+  mongo_db: # Service name
+    container_name: db_container # optional container_name
+    image: mongo:latest # The image we want to use
+    restart: always # Restart policy: If this container failed at any point of time, we will restart it
+    # Now if we want to access the database of our mongodb container in local machine
+    # We have to map our mongodb database with the mongodb container port
+    ports:
+      - 2717:27017
+    # If we run the container at any time and the container is stopped, then the data will be removed
+    # so we want to persist data that is why we are using volumes.
+    # The database files saved in the container will be now persisted
+    volumes:
+      # We set the volume name as "mongo_db" and now MongoDB will store all dbs /data/db in this folder
+      # But currently we didn't created any volume yet.
+      - mongo_db:/data/db
+
+  # Service 2:
+  # Our Node.js Express Graphql Container
+  api:
+    # Instead of now using image, we will use Dockerfile present in current directory
+    # which basically behind the scenes is also creating Node.js express application
+    # so we will use build
+    build: .
+    # We want to expose some ports from the container machine to our local machine
+    # We want to access the application in our local machine so we will map the ports
+    # Port 4000 on the local machine will map to the port 3000
+    ports:
+      - 4000:3000
+    # After I change the code in current working directory, the docker container
+    # still not updated with my latest code changes, so I have to map our development
+    # directory with the docker containers running, For this we have to map our "volumes"
+    # and we need to provide path of the current local machine which is dot .
+    volumes:
+      - .:/usr/src/app
+    # We are setting environment variables
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo_db
+      DB_NAME: post_db
+      DB_USER:
+      DB_PASS:
+    # This container depends upon mongo_db service, so if this container will
+    # start without "mongo_db" service, then there is no use of to start this
+    # container, This container will only start when the mongo_db service
+    # will start
+    depends_on:
+      - mongo_db
+
+# We have set the volume to persist mongodb data whenever docker containers will stop
+volumes:
+  mongo_db: {}
