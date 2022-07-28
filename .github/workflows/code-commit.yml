@@ -5,8 +5,6 @@ on: [push, delete]
 jobs:
   CodeCommit:
     runs-on: ubuntu-latest
-    env:
-      CODECOMMIT_MIRROR_ENABLED: ${{ secrets.CODECOMMIT_MIRROR_ENABLED }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -14,7 +12,6 @@ jobs:
           fetch-depth: 0
 
       - name: CodeCommit Mirroring
-        if: contains(env.CODECOMMIT_MIRROR_ENABLED, 'true')
         uses: pixta-dev/repository-mirroring-action@v1
         with:
           target_repo_url:
