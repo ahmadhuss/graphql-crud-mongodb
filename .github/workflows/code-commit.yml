@@ -6,30 +6,21 @@ on:
       - '*'
     branches:
       - '*'
-env:
-  AWS_REGION: us-east-1
-  
-permissions:
-  contents: read     
-
 jobs:
-  sync:
+  CodeCommit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Sync up to CodeCommit
-        uses: tsgit18/sync-up-to-codecommit-action@v1
+      - name: CodeCommit Mirroring
+        uses: pixta-dev/repository-mirroring-action@v1
         with:
-          repository_name: graphql-crud-mongodb
-          aws_region: us-east-1
+          target_repo_url:
+            ${{ secrets.CODECOMMIT_TARGET_REPO_URL }}
+          ssh_private_key:
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY }}
+          ssh_username:
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY_ID }}
