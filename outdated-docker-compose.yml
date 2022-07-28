@@ -4,8 +4,8 @@ services:
   # MongoDB Container
   # This service is responsible to start the MongoDB container
   mongo_db: # Service name
-    container_name: db_container # optional container_name
-    image: mongo:latest # The image we want to use
+    container_name: 831597937841.dkr.ecr.us-east-1.amazonaws.com/node-graphql-mongodb:latest
+    image: mongo:latest
     restart: always # Restart policy: If this container failed at any point of time, we will restart it
     # Now if we want to access the database of our mongodb container in local machine
     # We have to map our mongodb database with the mongodb container port
@@ -26,6 +26,7 @@ services:
     # which basically behind the scenes is also creating Node.js express application
     # so we will use build
     build: .
+    image: 831597937841.dkr.ecr.us-east-1.amazonaws.com/node-graphql-api:latest
     # We want to expose some ports from the container machine to our local machine
     # We want to access the application in our local machine so we will map the ports
     # Port 4000 on the local machine will map to the port 3000
