@@ -14,3 +14,11 @@ phases:
     commands:
       - echo Running tests
       - npm test
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 831597937841.dkr.ecr.us-east-1.amazonaws.com
+      - docker build -t graphql-crud-mongodb .
+      - docker tag graphql-crud-mongodb:latest 831597937841.dkr.ecr.us-east-1.amazonaws.com/graphql-crud-mongodb:latest
+
+  post_builds:
+    commands:
+      - echo Pushing to ECR
+      - docker push 831597937841.dkr.ecr.us-east-1.amazonaws.com/graphql-crud-mongodb:latest
