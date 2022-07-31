@@ -18,7 +18,7 @@ phases:
       - docker build -t graphql-crud-mongodb .
       - docker tag graphql-crud-mongodb:latest 831597937841.dkr.ecr.us-east-1.amazonaws.com/graphql-crud-mongodb:latest
 
-  post_builds:
+  post_build:
     commands:
       - echo Pushing to ECR
       - docker push 831597937841.dkr.ecr.us-east-1.amazonaws.com/graphql-crud-mongodb:latest
